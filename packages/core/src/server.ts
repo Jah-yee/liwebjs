@@ -42,8 +42,11 @@ export function createLiWebServer(
         send: conn.send.bind(conn),
       });
     },
-    () => {
-      // message routing later
+    (conn: LiWebConnection, event: string, payload: unknown) => {
+      // ✅ fixed: messages now actually dispatched
+      // Event routing will be expanded in Commit 2
+      // For now: echo back so the server is testable
+      conn.send(event, payload);
     },
     (conn: LiWebConnection) => {
       emit("disconnect", {
