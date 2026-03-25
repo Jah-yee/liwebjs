@@ -7,15 +7,27 @@ export interface ConnectionMeta {
 }
 
 export class LiWebConnection {
-  readonly id: string;
-  readonly meta: ConnectionMeta;
+  readonly id!: string;
+  readonly meta!: ConnectionMeta;
 
   private readonly adapter: Adapter;
 
   constructor(id: string, meta: ConnectionMeta, adapter: Adapter) {
-    this.id = id;
-    this.meta = meta;
     this.adapter = adapter;
+
+    Object.defineProperty(this, "id", {
+      value: id,
+      writable: false,
+      enumerable: true,
+      configurable: false,
+    });
+
+    Object.defineProperty(this, "meta", {
+      value: meta,
+      writable: false,
+      enumerable: true,
+      configurable: false,
+    });
   }
 
   send(event: string, payload: unknown): void {
