@@ -1,7 +1,7 @@
-import type { Adapter } from "./adapters/adapter.interface";
-import { wsAdapter } from "./adapters/ws";
-import type { Context } from "./context";
-import { LiWebConnection } from "./connection";
+import type { Adapter } from "./adapters/adapter.interface.ts";
+import { wsAdapter } from "./adapters/ws/index.ts";
+import type { Context } from "./context.ts";
+import { LiWebConnection } from "./connection.ts";
 
 type LifecycleEvent = "connection" | "disconnect";
 type LifecycleHandler = (ctx: Context) => void;

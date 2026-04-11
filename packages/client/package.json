@@ -1,15 +1,13 @@
 {
   "name": "liwebjs-client",
   "version": "0.0.1",
-  "description": "LiWebJS client SDK",
+  "description": "Browser client for liwebjs realtime framework",
+  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "test": "vitest"
+    "build": "tsc -p tsconfig.json"
   },
   "license": "MIT"
 }

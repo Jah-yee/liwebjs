@@ -2,8 +2,10 @@
   "name": "liwebjs-monorepo",
   "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "examples/*"
   ],
+ 
   "scripts": {
     "build": "npm run build -ws",
     "test": "npm run test -ws"
