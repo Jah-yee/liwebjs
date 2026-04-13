@@ -2,6 +2,7 @@ import type { Adapter } from "./adapters/adapter.interface.ts";
 import { wsAdapter } from "./adapters/ws/index.ts";
 import type { Context } from "./context.ts";
 import { LiWebConnection } from "./connection.ts";
+import { LiWebChannel } from "./channel.ts";
 
 type LifecycleEvent = "connection" | "disconnect";
 type LifecycleHandler = (ctx: Context) => void;
@@ -10,6 +11,7 @@ type EventHandler = (ctx: Context) => void;
 export interface LiWebServer {
   on(event: LifecycleEvent, handler: LifecycleHandler): void;
   handle(event: string, handler: EventHandler): void;
+  channel(name: string): LiWebChannel;
 }
 
 export interface LiWebServerOptions {
@@ -28,6 +30,7 @@ export function createLiWebServer(
   };
 
   const eventHandlers = new Map<string, EventHandler[]>();
+  const channels = new Map<string, LiWebChannel>();
 
   function emitLifecycle(event: LifecycleEvent, ctx: Context) {
     for (const handler of lifecycleHandlers[event]) {
@@ -64,7 +67,7 @@ export function createLiWebServer(
       });
     },
     (conn, event, payload) => {
-      emitEvent(conn, event, payload); // ✅ real dispatch now
+      emitEvent(conn, event, payload);
     },
     (conn) => {
       emitLifecycle("disconnect", {
@@ -87,6 +90,13 @@ export function createLiWebServer(
         eventHandlers.set(event, []);
       }
       eventHandlers.get(event)!.push(handler);
+    },
+
+    channel(name) {
+      if (!channels.has(name)) {
+        channels.set(name, new LiWebChannel(name));
+      }
+      return channels.get(name)!;
     },
   };
 }
