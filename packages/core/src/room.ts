@@ -1,14 +1,17 @@
-import type { LiWebConnection } from "./connection";
+import type { LiWebConnection } from "./connection.ts";
+import { LiWebState } from "./state.ts";
 
 export class LiWebRoom {
   readonly id: string;
   readonly channel: string;
+  readonly state: LiWebState;
 
   private members = new Map<string, LiWebConnection>();
 
   constructor(channel: string, id: string) {
     this.channel = channel;
     this.id = id;
+    this.state = new LiWebState();
   }
 
   // ── Membership ────────────────────────────────────────────────
@@ -35,23 +38,18 @@ export class LiWebRoom {
 
   // ── Broadcasting ──────────────────────────────────────────────
 
-  /** Broadcast to every member in the room */
   emit(event: string, payload: unknown): void {
     for (const conn of this.members.values()) {
       conn.send(event, payload);
     }
   }
 
-  /** Broadcast to every member except one (e.g. the sender) */
   emitExcept(excludeId: string, event: string, payload: unknown): void {
     for (const [id, conn] of this.members.entries()) {
-      if (id !== excludeId) {
-        conn.send(event, payload);
-      }
+      if (id !== excludeId) conn.send(event, payload);
     }
   }
 
-  /** Send to a specific member by connection id */
   emitTo(connId: string, event: string, payload: unknown): void {
     const conn = this.members.get(connId);
     conn?.send(event, payload);

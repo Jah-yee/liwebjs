@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { createLiWebClient } from "../../../../../packages/client/src/index.js";
-// import { createLiWebClient } from "@liwebjs/client";
 
 export function useChat(username) {
   const clientRef = useRef(null);
@@ -28,36 +27,45 @@ export function useChat(username) {
     });
 
     client.handle("welcome", (payload) => {
-      const { id, onlineCount } = payload;
+      const { id, onlineCount, history } = payload;
       myIdRef.current = id;
-      setState((s) => ({ ...s, myId: id, onlineCount }));
-    });
-
-    client.handle("message", (payload) => {
-      const p = payload;
       setState((s) => ({
         ...s,
-        messages: [
-          ...s.messages,
-          { ...p, mine: p.id === myIdRef.current },
-        ],
-        typingUsers: s.typingUsers.filter((u) => u !== p.username),
+        myId: id,
+        onlineCount,
+        messages: (history ?? []).map((m) => ({
+          ...m,
+          mine: m.id === id,
+        })),
       }));
     });
 
+    client.handle("message", (payload) => {
+      setState((s) => {
+        const isDuplicate = s.messages.some(m => m.ts === payload.ts && m.id === payload.id);
+        if (isDuplicate) return s;
+
+        return {
+          ...s,
+          messages: [
+            ...s.messages,
+            { ...payload, mine: payload.id === myIdRef.current },
+          ],
+          typingUsers: s.typingUsers.filter((u) => u !== payload.username),
+        };
+      });
+    });
+
     client.handle("user:joined", (payload) => {
-      const { onlineCount } = payload;
-      setState((s) => ({ ...s, onlineCount }));
+      setState((s) => ({ ...s, onlineCount: payload.onlineCount }));
     });
 
     client.handle("user:left", (payload) => {
-      const { onlineCount } = payload;
-      setState((s) => ({ ...s, onlineCount }));
+      setState((s) => ({ ...s, onlineCount: payload.onlineCount }));
     });
 
     client.handle("typing", (payload) => {
       const { username: typingUser } = payload;
-
       setState((s) => ({
         ...s,
         typingUsers: s.typingUsers.includes(typingUser)
@@ -74,7 +82,15 @@ export function useChat(username) {
     });
 
     return () => {
+      if (client.off) {
+        client.off("welcome");
+        client.off("message");
+        client.off("user:joined");
+        client.off("user:left");
+        client.off("typing");
+      }
       client.disconnect();
+      clientRef.current = null;
     };
   }, []);
 

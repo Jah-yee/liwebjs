@@ -19,15 +19,35 @@ const liweb = createLiWebServer(httpServer);
 const chat = liweb.channel("chat");
 const general = chat.room("general");
 
-// ── Connection lifecycle ──────────────────────────────────────────
+// after general room is created, initialize state
+general.state.set("messages", [] as { id: string; username: string; text: string; ts: number }[]);
+
+// inside liweb.handle("message"):
+liweb.handle("message", (ctx) => {
+  const { username, text } = ctx.payload as { username: string; text: string };
+
+  const message = {
+    id: ctx.connection.id,
+    username,
+    text,
+    ts: Date.now(),
+  };
+
+  // persist in room state
+  general.state.push("messages", message);
+
+  general.emit("message", message);
+});
+
+// send history to new connections
 liweb.on("connection", (ctx) => {
   general.join(ctx.connection);
-
-  console.log(`[+] ${ctx.connection.id} connected (${general.size} online)`);
 
   ctx.send("welcome", {
     id: ctx.connection.id,
     onlineCount: general.size,
+    // new joiners get full message history
+    history: general.state.get("messages"),
   });
 
   general.emitExcept(ctx.connection.id, "user:joined", {
