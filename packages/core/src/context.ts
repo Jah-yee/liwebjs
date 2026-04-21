@@ -1,9 +1,7 @@
-import type { LiWebConnection } from "./connection";
+import type { LiWebConnection } from "./connection.ts";
+import type { User } from "./auth.ts";
 
-export interface User {
-  id: string;
-  [key: string]: unknown;
-}
+export type { User };
 
 export interface Context {
   readonly connection: LiWebConnection;
