@@ -7,7 +7,7 @@ const app = express();
 app.use(cors({ origin: "http://localhost:5173" }));
 app.use(express.json());
 
-// Health check — useful for contributors to verify server is up
+// Health check
 app.get("/health", (_req, res) => {
   res.json({ status: "ok", framework: "liwebjs" });
 });
@@ -15,79 +15,70 @@ app.get("/health", (_req, res) => {
 const httpServer = createServer(app);
 const liweb = createLiWebServer(httpServer);
 
-// ── Channel + Room setup ──────────────────────────────────────────
+// ── Channel + Room ─────────────────────────────
 const chat = liweb.channel("chat");
 const general = chat.room("general");
 
-// after general room is created, initialize state
-general.state.set("messages", [] as { id: string; username: string; text: string; ts: number }[]);
+// initial state
+general.state.set("messages", []);
 
-// inside liweb.handle("message"):
-liweb.handle("message", (ctx) => {
-  const { username, text } = ctx.payload as { username: string; text: string };
+// ── Connection ────────────────────────────────
+liweb.on("connection", (c) => {
+  general.join(c.connection);
+
+  c.send("welcome", {
+    id: c.connection.id,
+    onlineCount: general.size,
+    history: general.state.get("messages"),
+  });
+
+  general.emitExcept(c.connection.id, "user:joined", {
+    onlineCount: general.size,
+  });
+
+  console.log(`[+] ${c.connection.id} connected (${general.size} online)`);
+});
+
+liweb.on("disconnect", (c) => {
+  general.leave(c.connection);
+
+  general.emit("user:left", {
+    onlineCount: general.size,
+  });
+
+  console.log(`[-] ${c.connection.id} disconnected (${general.size} online)`);
+});
+
+// ── Events ────────────────────────────────────
+
+// Send message
+liweb.handle("message", (c) => {
+  const { username, text } = c.payload as { username: string; text: string };
 
   const message = {
-    id: ctx.connection.id,
+    id: c.connection.id,
     username,
     text,
     ts: Date.now(),
   };
 
-  // persist in room state
+  // save + broadcast
   general.state.push("messages", message);
-
   general.emit("message", message);
-});
-
-// send history to new connections
-liweb.on("connection", (ctx) => {
-  general.join(ctx.connection);
-
-  ctx.send("welcome", {
-    id: ctx.connection.id,
-    onlineCount: general.size,
-    // new joiners get full message history
-    history: general.state.get("messages"),
-  });
-
-  general.emitExcept(ctx.connection.id, "user:joined", {
-    onlineCount: general.size,
-  });
-});
-
-liweb.on("disconnect", (ctx) => {
-  general.leave(ctx.connection);
-
-  console.log(`[-] ${ctx.connection.id} disconnected (${general.size} online)`);
-
-  general.emit("user:left", {
-    onlineCount: general.size,
-  });
-});
-
-// ── Event handlers ────────────────────────────────────────────────
-liweb.handle("message", (ctx) => {
-  const { username, text } = ctx.payload as { username: string; text: string };
 
   console.log(`[msg] ${username}: ${text}`);
-
-  general.emit("message", {
-    id: ctx.connection.id,
-    username,
-    text,
-    ts: Date.now(),
-  });
 });
 
-liweb.handle("typing", (ctx) => {
-  const { username } = ctx.payload as { username: string };
+// Typing indicator
+liweb.handle("typing", (c) => {
+  const { username } = c.payload as { username: string };
 
-  // Broadcast typing indicator to everyone except the typer
-  general.emitExcept(ctx.connection.id, "typing", { username });
+  general.emitExcept(c.connection.id, "typing", { username });
 });
 
-// ── Start ─────────────────────────────────────────────────────────
+// ── Start ─────────────────────────────────────
 const PORT = 3001;
+
 httpServer.listen(PORT, () => {
-  console.log(`liwebjs chat server running on http://localhost:${PORT}`);
+  console.log(`Server running at http://localhost:${PORT}`);
 });
