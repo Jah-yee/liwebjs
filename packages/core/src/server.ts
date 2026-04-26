@@ -1,5 +1,8 @@
 import type { Adapter } from "./adapters/adapter.interface.ts";
+// import { wsAdapter } from "./adapters/ws/index.ts";
+
 import { wsAdapter } from "./adapters/ws/index.ts";
+import type { WsAdapterOptions } from "./adapters/ws/index.ts";
 import type { Context } from "./context.ts";
 import { LiWebConnection } from "./connection.ts";
 import { LiWebChannel } from "./channel.ts";
@@ -19,13 +22,14 @@ export interface LiWebServer {
 export interface LiWebServerOptions {
   adapter?: Adapter;
   auth?: AuthOptions;
+  ping?: WsAdapterOptions;
 }
 
 export function createLiWebServer(
   server: unknown,
   options: LiWebServerOptions = {},
 ): LiWebServer {
-  const adapter = options.adapter ?? wsAdapter();
+  const adapter = options.adapter ?? wsAdapter(options.ping ?? {});
   const authOptions = options.auth ?? {};
 
   const lifecycleHandlers: Record<LifecycleEvent, LifecycleHandler[]> = {
