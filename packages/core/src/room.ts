@@ -1,5 +1,5 @@
-import type { LiWebConnection } from "./connection.ts";
-import { LiWebState } from "./state.ts";
+import type { LiWebConnection } from "./connection.js";
+import { LiWebState } from "./state.js";
 
 export class LiWebRoom {
   readonly id: string;

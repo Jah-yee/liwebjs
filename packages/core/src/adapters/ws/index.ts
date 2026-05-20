@@ -1,8 +1,8 @@
 import { WebSocketServer, type WebSocket } from "ws";
 import { randomUUID } from "crypto";
 import type { IncomingMessage } from "http";
-import type { Adapter } from "../adapter.interface.ts";
-import { LiWebConnection } from "../../connection.ts";
+import type { Adapter } from "../adapter.interface.js";
+import { LiWebConnection } from "../../connection.js";
 
 const socketMap = new WeakMap<LiWebConnection, WebSocket>();
 

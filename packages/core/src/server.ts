@@ -1,13 +1,13 @@
-import type { Adapter } from "./adapters/adapter.interface.ts";
+import type { Adapter } from "./adapters/adapter.interface.js";
 // import { wsAdapter } from "./adapters/ws/index.ts";
 
-import { wsAdapter } from "./adapters/ws/index.ts";
-import type { WsAdapterOptions } from "./adapters/ws/index.ts";
-import type { Context } from "./context.ts";
-import { LiWebConnection } from "./connection.ts";
-import { LiWebChannel } from "./channel.ts";
-import type { AuthOptions, User } from "./auth.ts";
-import { validateAuth } from "./auth.ts";
+import { wsAdapter } from "./adapters/ws/index.js";
+import type { WsAdapterOptions } from "./adapters/ws/index.js";
+import type { Context } from "./context.js";
+import { LiWebConnection } from "./connection.js";
+import { LiWebChannel } from "./channel.js";
+import type { AuthOptions, User } from "./auth.js";
+import { validateAuth } from "./auth.js";
 
 type LifecycleEvent = "connection" | "disconnect" | "auth:error";
 type LifecycleHandler = (ctx: Context) => void;

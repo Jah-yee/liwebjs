@@ -6,8 +6,8 @@
     "outDir": "dist",
     "declaration": true,
     "declarationMap": true,
-    "allowImportingTsExtensions": true,
-    "noEmit": true
+    "noEmit": false
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["src/**/__tests__/**"]
 }

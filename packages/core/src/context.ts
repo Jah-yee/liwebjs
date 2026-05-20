@@ -1,4 +1,4 @@
-import type { LiWebConnection } from "./connection.ts";
+import type { LiWebConnection } from "./connection.js";
 import type { User } from "./auth.ts";
 
 export type { User };

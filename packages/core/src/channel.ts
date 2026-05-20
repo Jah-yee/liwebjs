@@ -1,4 +1,4 @@
-import { LiWebRoom } from "./room.ts";
+import { LiWebRoom } from "./room.js";
 
 export class LiWebChannel {
   readonly name: string;
