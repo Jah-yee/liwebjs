@@ -1,21 +1,27 @@
 {
   "name": "liwebjs-client",
   "version": "0.0.1",
-  "description": "Browser client for liwebjs realtime framework",
+  "description": "Browser client SDK for liwebjs realtime framework",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.build.json",
     "test": "vitest run",
     "test:watch": "vitest"
   },
-  "devDependencies": {
-    "happy-dom": "^20.9.0",
-    "vitest": "^4.1.5"
-  },
-  "license": "MIT"
+  "keywords": ["websocket", "realtime", "client", "browser", "liwebjs"],
+  "author": "Sumeet Umbalkar",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sumeet57/liwebjs.git"
+  }
 }

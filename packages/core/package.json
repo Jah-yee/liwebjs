@@ -1,18 +1,29 @@
 {
   "name": "liwebjs",
   "version": "0.0.1",
-  "description": "Realtime room-based WebSocket framework",
+  "description": "Lightweight realtime backend framework for Node.js",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.build.json",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage"
   },
-  "license": "MIT"
+  "keywords": ["websocket", "realtime", "framework", "rooms", "channels", "liwebjs"],
+  "author": "Sumeet Umbalkar",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sumeet57/liwebjs.git"
+  },
+  "homepage": "https://github.com/sumeet57/liwebjs#readme"
 }
