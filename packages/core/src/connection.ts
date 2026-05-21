@@ -1,4 +1,4 @@
-import type { Adapter } from "./adapters/adapter.interface.ts";
+import type { Adapter } from "./adapters/adapter.interface.js";
 export interface ConnectionMeta {
   headers: Record<string, string | string[] | undefined>;
   ip?: string;

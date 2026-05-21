@@ -1,9 +1,8 @@
-
-
-export { createLiWebServer } from "./server.ts";
-export { wsAdapter } from "./adapters/ws/index.ts";
-export type { Context } from "./context.ts";
-export type { LiWebServer, LiWebServerOptions } from "./server.ts";
-export { LiWebChannel } from "./channel.ts";
-export { LiWebRoom } from "./room.ts";
-export { LiWebState } from "./state.ts";
+export { createLiWebServer } from "./server.js";
+export { wsAdapter } from "./adapters/ws/index.js";
+export type { Context } from "./context.js";
+export type { LiWebServer, LiWebServerOptions } from "./server.js";
+export { LiWebChannel } from "./channel.js";
+export { LiWebRoom } from "./room.js";
+export { LiWebState } from "./state.js";
+export type { AuthOptions, AuthPayload, User } from "./auth.js";
