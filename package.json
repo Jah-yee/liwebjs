@@ -5,7 +5,6 @@
     "packages/*",
     "examples/*"
   ],
- 
   "scripts": {
     "build": "npm run build -ws",
     "test": "npm run test -ws"
@@ -18,5 +17,6 @@
   },
   "dependencies": {
     "ws": "^8.19.0"
-  }
+  },
+  "version": "0.0.1"
 }
