@@ -1,11 +1,14 @@
 {
   "name": "liwebjs",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Lightweight realtime backend framework for Node.js",
   "type": "module",
+  "private": false,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "exports": {
     ".": {
       "import": "./dist/index.js",
@@ -18,7 +21,14 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage"
   },
-  "keywords": ["websocket", "realtime", "framework", "rooms", "channels", "liwebjs"],
+  "keywords": [
+    "websocket",
+    "realtime",
+    "framework",
+    "rooms",
+    "channels",
+    "liwebjs"
+  ],
   "author": "Sumeet Umbalkar",
   "license": "MIT",
   "repository": {

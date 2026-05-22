@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from "react";
-import { createLiWebClient } from "../../../../../packages/client/src/index.js";
+import { createLiWebClient } from "liwebjs-client";
 
 export function useChat(username) {
   const clientRef = useRef(null);

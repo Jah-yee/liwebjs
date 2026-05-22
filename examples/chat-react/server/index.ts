@@ -1,7 +1,7 @@
 import express from "express";
 import { createServer } from "http";
 import cors from "cors";
-import { createLiWebServer } from "../../../packages/core/src/index.ts";
+import { createLiWebServer } from "liwebjs"
 
 const app = express();
 app.use(cors({ origin: "http://localhost:5173" }));
@@ -23,7 +23,7 @@ const general = chat.room("general");
 general.state.set("messages", []);
 
 // ── Connection ────────────────────────────────
-liweb.on("connection", (c) => {
+liweb.on("connection", (c: any) => {
   general.join(c.connection);
 
   c.send("welcome", {
@@ -39,7 +39,7 @@ liweb.on("connection", (c) => {
   console.log(`[+] ${c.connection.id} connected (${general.size} online)`);
 });
 
-liweb.on("disconnect", (c) => {
+liweb.on("disconnect", (c: any) => {
   general.leave(c.connection);
 
   general.emit("user:left", {
@@ -52,7 +52,7 @@ liweb.on("disconnect", (c) => {
 // ── Events ────────────────────────────────────
 
 // Send message
-liweb.handle("message", (c) => {
+liweb.handle("message", (c: any) => {
   const { username, text } = c.payload as { username: string; text: string };
 
   const message = {
@@ -70,7 +70,7 @@ liweb.handle("message", (c) => {
 });
 
 // Typing indicator
-liweb.handle("typing", (c) => {
+liweb.handle("typing", (c: any) => {
   const { username } = c.payload as { username: string };
 
   general.emitExcept(c.connection.id, "typing", { username });
