@@ -8,6 +8,7 @@ import { LiWebConnection } from "./connection.js";
 import { LiWebChannel } from "./channel.js";
 import type { AuthOptions, User } from "./auth.js";
 import { validateAuth } from "./auth.js";
+import { LiWebPresenceEngine, type PresenceOptions } from "./presence.js";
 
 type LifecycleEvent = "connection" | "disconnect" | "auth:error";
 type LifecycleHandler = (ctx: Context) => void;
@@ -23,6 +24,7 @@ export interface LiWebServerOptions {
   adapter?: Adapter;
   auth?: AuthOptions;
   ping?: WsAdapterOptions;
+  presence?: PresenceOptions; // 0.0.3
 }
 
 export function createLiWebServer(
@@ -31,7 +33,6 @@ export function createLiWebServer(
 ): LiWebServer {
   const adapter = options.adapter ?? wsAdapter(options.ping ?? {});
   const authOptions = options.auth ?? {};
-
   const lifecycleHandlers: Record<LifecycleEvent, LifecycleHandler[]> = {
     connection: [],
     disconnect: [],
@@ -186,7 +187,7 @@ export function createLiWebServer(
 
     channel(name) {
       if (!channels.has(name)) {
-        channels.set(name, new LiWebChannel(name));
+        channels.set(name, new LiWebChannel(name, options.presence ?? {} ));
       }
       return channels.get(name)!;
     },
